@@ -28,9 +28,10 @@ def test_filename_extension_filedir():
 	# json
 
 
-	# TEST CASE 3 (Correct path is provided, file name with extension, externally provided extension {skipped})
+	# TEST CASE 3 (Correct path is provided, file name with extension, externally 
+    # provided extension {skipped})
 	kaggle_dataset3 = kd3 = KaggleDataSetCreator(
-								path = 'C:\\Users\\MyOwnFile.csv', 
+								path = 'D:\\Users\\MyOwnFile.csv', 
 								extension="json"
 							)
 
@@ -39,7 +40,7 @@ def test_filename_extension_filedir():
 	print(kd3.extension)
 	print()
 	# MyOwnFile
-	# C:\Users
+	# D:\Users
 	# csv
 
 
@@ -69,4 +70,12 @@ def test_filename_extension_filedir():
 	# .
 	# csv
 
-test_filename_extension_filedir()
+def test_column_names():
+    kd6 = KaggleDataSetCreator()
+    kd6.start()
+    print(kd6.columns)
+
+if __name__ == "__main__":
+    test_filename_extension_filedir()
+    test_column_names()
+
