@@ -70,8 +70,3 @@ def test_filename_extension_filedir():
 	# csv
 
 test_filename_extension_filedir()
-
-
-
-
-
