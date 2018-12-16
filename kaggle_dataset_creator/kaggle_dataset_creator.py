@@ -6,7 +6,7 @@
 import os
 import re
 import pandas as pd
-from messages import warning
+from messages import warning, success
 
 
 class KaggleDataSetCreator(object):
@@ -25,7 +25,9 @@ class KaggleDataSetCreator(object):
 			- path: Absolute/relative path of the output file (csv, json)
 			- extension: Extension to use for the output file (default: csv)
 		"""
+
 		filedir, filename, extension = self.__validate_and_get(path, extension)
+		
 		self.filedir = filedir
 		self.filename = filename
 		self.extension = extension
@@ -92,12 +94,12 @@ class KaggleDataSetCreator(object):
 			if not extension in ["json", 'csv']:
 				extension = 'csv'
 
-		# Repeatedly check for an existance of specified filename, 
+		# Repeatedly check for an existence of specified filename, 
 		# if it already exists (do not override)
 		# and choose another file name by appending numbers like 1, 2, 3 and so...on
 		i = 1
 		while os.path.exists(os.path.join(filedir, filename + '.' + extension)):
-			filename = filename + str(i) + '.' + extension
+			filename = filename + "-" + str(i) + '.' + extension;
 			i = i + 1;
 
 		return filedir, filename, extension
@@ -107,5 +109,15 @@ class KaggleDataSetCreator(object):
 		pass
 
 	def create_csv(self):
-		pass
+		"""
+		Description
+		===========
+			- Creates csv/json file containing the enetered data from terminal
+		"""
+
+		df = pd.DataFrame(self.container, columns=self.columns)
+		csv_path = os.path.join(self.filedir, self.filename, self.extension)
+
+		pd.to_csv(csv_path)
+
 
