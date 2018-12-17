@@ -74,6 +74,7 @@ def test_column_names():
     kd6 = KaggleDataSetCreator()
     kd6.start()
     print(kd6.columns)
+    print(kd6.container)
 
 
 if __name__ == "__main__":

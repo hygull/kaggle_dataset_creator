@@ -4,7 +4,10 @@ from colorama import init, Fore
 init(autoreset=True, strip=False)
 
 def warning(message, **kwargs):
-	print(Fore.RED + '\nWARNING: %s' % message)
+	print(Fore.YELLOW + '\nWARNING: %s' % message)
 
 def success(message, **kwargs):
 	print(Fore.GREEN + "\nSUCCESS: %s" % message)
+
+def error(message, **kwargs):
+	print(Fore.RED + "\nERROR: %s" % message)

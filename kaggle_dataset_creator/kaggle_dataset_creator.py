@@ -2,7 +2,7 @@
 import os
 import re
 import pandas as pd
-from messages import warning, success
+from messages import warning, success, error
 
 
 class KaggleDataSetCreator(object):
@@ -31,6 +31,7 @@ class KaggleDataSetCreator(object):
         self.container = {} # Conatiner of enetered data (an input to pandas.DataFrame)
         self.total_columns = 0
         self.columns = []
+        self.collens = []
 
         # Private variable to maintain the calling sequences
         self.__states = {}
@@ -105,8 +106,81 @@ class KaggleDataSetCreator(object):
 
         return filedir, filename, extension
 
+    def get_value_for(self, rowno, colname, max_col_len):
+        """ 
+        Description
+        ===========
+            - Returns the value entered on console
+        """
 
-    def get_column_names(self):
+        s = "[Data entry] <row " + str(rowno) + "> "
+        l = len(s) + max_col_len + 4
+        f = ("%-" + str(l) + "s : ") % (s + " " + colname)
+        value = input(f).strip()
+
+        return value
+
+    def set_container(self):
+        """
+        Description
+        ===========
+            - Asks user to enter data for each rows, column by column 
+            - Finally sets the container attribute of the class
+        """
+
+        done = False
+
+        if self.__states.get('start'):
+            if self.__states.get('set_column_names'):
+                done = True
+            else:
+                warning("You are directly trying to invoke, set_container() method"
+                    ", please call start() => set_column_names() methods first")
+        else:
+            warning("You are directly trying to invoke, set_container() method"
+                    ", please call start() method first")
+
+        if done:
+            satisfied = False
+            rowno = 1
+            hashes =  "======================================="
+            msg = "\n" + hashes + "\nDo you want to add 1 more row (y/n): "
+            max_col_len =  max(self.collens)
+
+            while not satisfied:
+                for colname in self.columns:
+                    value = self.get_value_for(rowno, colname, max_col_len)
+
+                    if colname in self.container:
+                        self.container[colname].append(value)
+                    else:
+                        self.container[colname] = [value]
+
+                inp = (input(msg).strip()).lower()
+
+                if inp == 'y' or inp == 'yes':
+                    rowno += 1
+                    print(hashes)
+                    continue # To continue with entering data for next row
+                else:
+                    # This is just to make the code meaningful even break can also be used
+                    nmtc = no_or_mistakenly_typed_confirmation = input("Is this mistakenly typed (y/n): ").strip()
+
+                    if(nmtc.lower() == "n" or nmtc.lower() == "no"):
+                        satisfied = True
+                    elif not(nmtc.lower() == 'y' or nmtc.lower() == 'yes'):
+                        warning("This is for your help, just type proper value to exit/continue")
+                    else:
+                        rowno += 1
+                        
+                    print(hashes) 
+
+            return True  # Success
+        else:
+            return False # Failure
+
+
+    def set_column_names(self):
         """
         Description
         ===========
@@ -143,9 +217,15 @@ class KaggleDataSetCreator(object):
                     continue
 
                 self.columns.append(colname)
+                self.collens.append(len(colname)) 
                 i += 1
+
+            self.__states["set_column_names"] = True
+            return True # Success
         else:
-            return self.columns
+            warning("You are directly trying to invoke, set_column_names() method"
+                    ", please call start() method first")
+            return False # Failure
 
 
     def start(self):
@@ -164,7 +244,7 @@ class KaggleDataSetCreator(object):
 
         while not everything_is_ok:
             cols = input('Enter number of columns that you want in your dataset: ').strip(); 
-            
+
             if re.match(r"^\d+$", cols):
                 cols = int(cols)
 
@@ -181,11 +261,20 @@ class KaggleDataSetCreator(object):
         self.__states = {"start": True}
 
         # Do not need to add \n either at beginning or end while calling messages
-        # function like success() / warning() etc.
+        # function like success() / warning() / error() etc.
         success("You are successfully done with no. of columns") 
 
-        columns = self.get_column_names()
-        success("You are successfully done with the column names")
+        ret = self.set_column_names()
+        if ret:
+            success("You are successfully done with the column names")
+        else:
+            error("Something unexpected happened")
+
+        ret = self.set_container()
+        if ret:
+            success("You are successfully done with entering data for your dataset")
+        else:
+            error("Something unexpected happened")
 
 
     def create_csv(self):
@@ -199,5 +288,3 @@ class KaggleDataSetCreator(object):
         csv_path = os.path.join(self.filedir, self.filename, self.extension)
 
         pd.to_csv(csv_path)
-
-
