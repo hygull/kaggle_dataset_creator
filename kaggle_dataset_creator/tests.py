@@ -75,7 +75,10 @@ def test_column_names():
     kd6.start()
     print(kd6.columns)
 
-if __name__ == "__main__":
-    test_filename_extension_filedir()
-    test_column_names()
 
+if __name__ == "__main__":
+    # 1st
+    test_filename_extension_filedir()
+
+    # 2nd
+    test_column_names()

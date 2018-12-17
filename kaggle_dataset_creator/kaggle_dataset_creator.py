@@ -32,6 +32,9 @@ class KaggleDataSetCreator(object):
         self.total_columns = 0
         self.columns = []
 
+        # Private variable to maintain the calling sequences
+        self.__states = {}
+
     def __validate_and_get(self, path, extension):
         """
         Description
@@ -110,27 +113,39 @@ class KaggleDataSetCreator(object):
             - Asks user to enter the name of columns that will appear in csv 
               or (as keys in json object) 
         """
+        if self.__states.get('start', None):
+            cols = self.total_columns # To short the name (value of cols >= 1)
+            
+            d = {
+                1: '1st',
+                2: '2nd',
+                3: '3rd'
+            }
 
-        cols = self.total_columns # To short the name (value of cols >= 1)
-        
-        d = {
-            1: '1st',
-            2: '2nd',
-            3: '3rd'
-        }
+            f = str(len(str(cols)) + 2) # cols => Total number of columns (extra 2 is for st, nd, rd, th etc.)
+            s = "Enter the name of %s column: " % ("%-" + f + "s")
+            
+            i = 1
+            while i <= cols:
+                if i <= 3:
+                    colname = input(s % (d[i]))
+                else:
+                    colname = input(s % (str(i) + 'th'))
 
-        s = "Enter the name of %s column"
-        f = "%-" + str(len(s) + len(str(cols))) + "s"
+                if not(re.match(r"^\w+(\w+[-_])*\w+$", colname)):
+                    warning("Please do not use characters for column names other than "
+                            "A-Za-z0-9_-")
+                    continue
 
-        i = 1
-        while i <= cols:
-            colname = input( (s % f) + ' %s' % d[i] + ":")
+                if colname in self.columns:
+                    warning('The entered column name {} has been already choosen '
+                           '(please enter another name)'.format(colname))
+                    continue
 
-            if not(re.match(r"^\w+(\w+[-_])*\w+$"), colname):
-                warning("Please do not use characters for column names other than A-Za-z0-9_-")
-                continue
-
-            i += 1
+                self.columns.append(colname)
+                i += 1
+        else:
+            return self.columns
 
 
     def start(self):
@@ -148,8 +163,8 @@ class KaggleDataSetCreator(object):
         everything_is_ok = False
 
         while not everything_is_ok:
-            cols = input('Enter number of columns that you want in your dataset: ');        
-            print(cols)
+            cols = input('Enter number of columns that you want in your dataset: ').strip(); 
+            
             if re.match(r"^\d+$", cols):
                 cols = int(cols)
 
@@ -159,10 +174,18 @@ class KaggleDataSetCreator(object):
 
                 everything_is_ok = True
             else:
-                warning("The entered value doesn't look like a +ve integer, please enter a valid integer number")
+                warning("The entered value doesn't look like a +ve integer "
+                    "please enter a valid integer number")
 
         self.total_columns = cols
+        self.__states = {"start": True}
+
+        # Do not need to add \n either at beginning or end while calling messages
+        # function like success() / warning() etc.
+        success("You are successfully done with no. of columns") 
+
         columns = self.get_column_names()
+        success("You are successfully done with the column names")
 
 
     def create_csv(self):
