@@ -77,6 +77,10 @@ def test_column_names():
     print(kd6.container)
     kd6.view()
 
+    # @property 
+    print("DATA:- ")
+    print(kd6.data) # worked
+
 
 if __name__ == "__main__":
     # 1st

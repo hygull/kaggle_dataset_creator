@@ -207,7 +207,7 @@ class KaggleDataSetCreator(object):
                 else:
                     colname = input(s % (str(i) + 'th'))
 
-                if not(re.match(r"^\w+(\w+[-_])*\w+$", colname)):
+                if not(re.match(r"^\w*(\w+[-_])*\w+$", colname)):
                     warning("Please do not use characters for column names other than "
                             "A-Za-z0-9_-")
                     continue
@@ -277,6 +277,24 @@ class KaggleDataSetCreator(object):
         else:
             error("Something unexpected happened")
 
+    def status_is_ok(self):
+        states = self.__states
+
+        if states["start"]:
+            if states["set_column_names"]:
+                if states["set_container"]:
+                    return True
+                else:
+                    warning("You are directly trying to invoke, view() method"
+                        ", please call start() => set_column_names() => set_container() methods first")
+            else:
+                warning("You are directly trying to invoke, view() method"
+                    ", please call start() => set_column_names() methods first")
+        else:
+            warning("You are directly trying to invoke, view() method"
+                ", please call start() method first")
+
+        return False # Failure
 
     def view(self):
         """
@@ -293,25 +311,30 @@ class KaggleDataSetCreator(object):
             >>> kd.container
         """
 
-        states = self.__states
+        if self.status_is_ok():
+            self.df = pd.DataFrame(self.container)
+            data(self.df) # Success
+            return True
 
-        if states["start"]:
-            if states["set_column_names"]:
-                if states["set_container"]:
-                    self.df = pd.DataFrame(self.container)
-                    data(self.df) # Success
-                    return True
-                else:
-                    warning("You are directly trying to invoke, view() method"
-                        ", please call start() => set_column_names() => set_container() methods first")
-            else:
-                warning("You are directly trying to invoke, view() method"
-                    ", please call start() => set_column_names() methods first")
+        return False
+
+    @property
+    def data(self):
+        """
+        Description
+        ===========
+            - Returns pandas.DataFrame object created using 'container' 
+              dictionary
+
+            - Returns False if the status is not ok i.e. if you failed to call start(),
+              and other methods like set_column_names() etc. (Please check documentation
+              for more details)
+        """
+
+        if self.status_is_ok():
+            return self.df 
         else:
-            warning("You are directly trying to invoke, view() method"
-                ", please call start() method first")
-
-        return False # Failure
+            return False
 
 
     def create_csv(self):
