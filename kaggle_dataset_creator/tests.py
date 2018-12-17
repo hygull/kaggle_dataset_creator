@@ -75,6 +75,7 @@ def test_column_names():
     kd6.start()
     print(kd6.columns)
     print(kd6.container)
+    kd6.view()
 
 
 if __name__ == "__main__":

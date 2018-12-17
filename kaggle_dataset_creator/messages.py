@@ -11,3 +11,7 @@ def success(message, **kwargs):
 
 def error(message, **kwargs):
 	print(Fore.RED + "\nERROR: %s" % message)
+
+def data(d, **kwargs):
+	print('\n')
+	print(d)

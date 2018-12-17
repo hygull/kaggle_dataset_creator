@@ -2,7 +2,7 @@
 import os
 import re
 import pandas as pd
-from messages import warning, success, error
+from messages import warning, success, error, data
 
 
 class KaggleDataSetCreator(object):
@@ -113,7 +113,7 @@ class KaggleDataSetCreator(object):
             - Returns the value entered on console
         """
 
-        s = "[Data entry] <row " + str(rowno) + "> "
+        s = "[DATA ENTRY] <row " + str(rowno) + "> "
         l = len(s) + max_col_len + 4
         f = ("%-" + str(l) + "s : ") % (s + " " + colname)
         value = input(f).strip()
@@ -172,9 +172,10 @@ class KaggleDataSetCreator(object):
                         warning("This is for your help, just type proper value to exit/continue")
                     else:
                         rowno += 1
-                        
+
                     print(hashes) 
 
+            self.__states["set_container"] = True
             return True  # Success
         else:
             return False # Failure
@@ -277,14 +278,49 @@ class KaggleDataSetCreator(object):
             error("Something unexpected happened")
 
 
+    def view(self):
+        """
+        Description
+        ===========
+            - Shows the entered data as a pandas DataFrame
+              by using the data contained in class attribute 'container'
+
+            - The 'container' which is a dictionary can be directly accessed via the class
+              instance as below:
+              
+            >>> kd = KaggleDataSetCreator()
+            >>> kd.start() 
+            >>> kd.container
+        """
+
+        states = self.__states
+
+        if states["start"]:
+            if states["set_column_names"]:
+                if states["set_container"]:
+                    self.df = pd.DataFrame(self.container)
+                    data(self.df) # Success
+                    return True
+                else:
+                    warning("You are directly trying to invoke, view() method"
+                        ", please call start() => set_column_names() => set_container() methods first")
+            else:
+                warning("You are directly trying to invoke, view() method"
+                    ", please call start() => set_column_names() methods first")
+        else:
+            warning("You are directly trying to invoke, view() method"
+                ", please call start() method first")
+
+        return False # Failure
+
+
     def create_csv(self):
         """
         Description
         ===========
             - Creates csv/json file containing the entered data from Terminal
+            - Uses the value of attribute named 'container' for creating DataFrame
         """
 
-        df = pd.DataFrame(self.container, columns=self.columns)
         csv_path = os.path.join(self.filedir, self.filename, self.extension)
-
-        pd.to_csv(csv_path)
+        self.df.to_csv(csv_path)
