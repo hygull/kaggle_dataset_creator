@@ -1,8 +1,8 @@
-from kaggle_dataset_creator import KaggleDataSetCreator
+from kaggle_dataset_creator import KaggleDataSet
 
 def test_filename_extension_filedir():
 	# TEST CASE 1
-	kaggle_dataset = kd = KaggleDataSetCreator()
+	kaggle_dataset = kd = KaggleDataSet()
 
 	print(kd.filename)
 	print(kd.filedir)
@@ -14,7 +14,7 @@ def test_filename_extension_filedir():
 
 
 	# TEST CASE 2
-	kaggle_dataset2 = kd2 = KaggleDataSetCreator(
+	kaggle_dataset2 = kd2 = KaggleDataSet(
 								path = 'MyOwnFile', 
 								extension = "json"
 							)
@@ -30,7 +30,7 @@ def test_filename_extension_filedir():
 
 	# TEST CASE 3 (Correct path is provided, file name with extension, externally 
     # provided extension {skipped})
-	kaggle_dataset3 = kd3 = KaggleDataSetCreator(
+	kaggle_dataset3 = kd3 = KaggleDataSet(
 								path = 'D:\\Users\\MyOwnFile.csv', 
 								extension="json"
 							)
@@ -45,7 +45,7 @@ def test_filename_extension_filedir():
 
 
 	# TEST CASE 4 (Wrong path is provided)
-	kaggle_dataset4 = kd4 = KaggleDataSetCreator(
+	kaggle_dataset4 = kd4 = KaggleDataSet(
 								path = 'C:\\Use\\MyOwnFile2.csv', 
 								extension="json"
 							)
@@ -60,7 +60,7 @@ def test_filename_extension_filedir():
 
 
 	# TEST CASE 5 (MyDataSet already exists in current directory)
-	kaggle_dataset5 = kd5 = KaggleDataSetCreator(path = 'MyDataSet1.csv')
+	kaggle_dataset5 = kd5 = KaggleDataSet(path = 'MyDataSet1.csv')
 
 	print(kd5.filename)
 	print(kd5.filedir)
@@ -71,7 +71,7 @@ def test_filename_extension_filedir():
 	# csv
 
 def test_column_names():
-    kd6 = KaggleDataSetCreator()
+    kd6 = KaggleDataSet()
     kd6.start()
     print(kd6.columns)
     print(kd6.container)
@@ -81,7 +81,7 @@ def test_column_names():
 
     # @property 
     print("DATA:- ")
-    print(kd6.data) # worked
+    print(kd6.dataset) # worked
 
 
 if __name__ == "__main__":

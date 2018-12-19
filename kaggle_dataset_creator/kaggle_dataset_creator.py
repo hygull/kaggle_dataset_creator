@@ -2,14 +2,31 @@
 import os
 import re
 import pandas as pd
-from messages import warning, success, error, data
+from message import Message
 
 
-class KaggleDataSetCreator(object):
+class KaggleDataSet(Message):
+    """
+    Description
+    ===========
+        - A class containing number of methods and attributes (almost all're initialized)
+          to create dataset in the form of csv/json etc. so that either 
+            (a) they could be used to work with pandas
+            (b) or used to upload/publish our own created data on Kaggle (https://www.kaggle.com/datasets)
+                as the data to be uploaded on Kaggle should be excellent and unique
+
+        - This class provides attributes that you can use to 
+
+        - This class provides you methods that asks user to enter data for each column
+          of rows 1 after 1 and generates csv/json as final output 
+
+    """
+
     def __init__(self, 
                   path = "KaggleDataSet",
                   extension = 'csv'
                 ):
+
         """
         A constructor
         =============
@@ -24,17 +41,39 @@ class KaggleDataSetCreator(object):
 
         filedir, filename, extension = self.__validate_and_get(path, extension)
 
+        # Used to store the relative/absolute path of the destination directory
+        # This value will be used while creating the JSON/CSV file 
+        # If you do not provide file path while instantiation then the current 
+        # directory (.) will be used
         self.filedir = filedir
+
+        # Used to store the base name of file (A.py => A)
         self.filename = filename
+
+        # Used to store the extension of the file
         self.extension = extension
 
-        self.container = {} # Conatiner of enetered data (an input to pandas.DataFrame)
+        # Conatiner of enetered data (an input to pandas.DataFrame)
+        self.container = {} 
+
+        # Used to store the number of enetered columns in the CSV
         self.total_columns = 0
+
+        # Used to store the name of enetered name of all columns (initially blank)
         self.columns = []
-        self.collens = []
+
+        # Used to store length of all column names
+        self.collens = [] 
 
         # Private variable to maintain the calling sequences
         self.__states = {}
+
+        # If DataFrame is SET
+        self.df_set = False
+
+        # For implementing the feature of printing relevant messages to the console
+        self.message = Message()
+
 
     def __validate_and_get(self, path, extension):
         """
@@ -87,7 +126,7 @@ class KaggleDataSetCreator(object):
                 filedir = "."
 
             if not re.match(r"^\w+(\w+[-_])*\w+$", filename):
-                warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc.')
+                self._Message__warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc.')
                 filename = "KaggleDataSet"
         else:
             filename = 'KaggleDataSet'
@@ -127,41 +166,49 @@ class KaggleDataSetCreator(object):
             - Asks user to enter data for each rows, column by column 
             - Finally sets the container attribute of the class
         """
-
+        ask_for_data_entry = True
         done = False
 
         if self.__states.get('start'):
             if self.__states.get('set_column_names'):
                 done = True
             else:
-                warning("You are directly trying to invoke, set_container() method"
+                self._Message__warning("You are directly trying to invoke, set_container() method"
                     ", please call start() => set_column_names() methods first")
         else:
-            warning("You are directly trying to invoke, set_container() method"
+            self._Message__warning("You are directly trying to invoke, set_container() method"
                     ", please call start() method first")
 
         if done:
             satisfied = False
             rowno = 1
             hashes =  "======================================="
-            msg = "\n" + hashes + "\nDo you want to add 1 more row (y/n): "
+            msg = "\n" + hashes + "\nDo you want to add 1 more row / view data (y/n/v): "
             max_col_len =  max(self.collens)
 
             while not satisfied:
-                for colname in self.columns:
-                    value = self.get_value_for(rowno, colname, max_col_len)
+                if ask_for_data_entry:
+                    for colname in self.columns:
+                        value = self.get_value_for(rowno, colname, max_col_len)
 
-                    if colname in self.container:
-                        self.container[colname].append(value)
-                    else:
-                        self.container[colname] = [value]
+                        if colname in self.container:
+                            self.container[colname].append(value)
+                        else:
+                            self.container[colname] = [value]
 
                 inp = (input(msg).strip()).lower()
 
                 if inp == 'y' or inp == 'yes':
                     rowno += 1
                     print(hashes)
+                    ask_for_data_entry = True
                     continue # To continue with entering data for next row
+                elif inp.lower() == 'v' or inp.lower() == 'view':
+                    self.__create() # Recreation of DataFrame with newly entered data
+                    self._Message__data(self.df)
+                    viewed = True
+                    ask_for_data_entry = False
+                    continue
                 else:
                     # This is just to make the code meaningful even break can also be used
                     nmtc = no_or_mistakenly_typed_confirmation = input("Is this mistakenly typed (y/n): ").strip()
@@ -169,11 +216,12 @@ class KaggleDataSetCreator(object):
                     if(nmtc.lower() == "n" or nmtc.lower() == "no"):
                         satisfied = True
                     elif not(nmtc.lower() == 'y' or nmtc.lower() == 'yes'):
-                        warning("This is for your help, just type proper value to exit/continue")
+                        self._Message__warning("This is for your help, just type proper value to exit/continue")
                     else:
                         rowno += 1
 
                     print(hashes) 
+                    ask_for_data_entry = True
 
             self.__states["set_container"] = True
             return True  # Success
@@ -188,6 +236,7 @@ class KaggleDataSetCreator(object):
             - Asks user to enter the name of columns that will appear in csv 
               or (as keys in json object) 
         """
+
         if self.__states.get('start', None):
             cols = self.total_columns # To short the name (value of cols >= 1)
             
@@ -208,12 +257,12 @@ class KaggleDataSetCreator(object):
                     colname = input(s % (str(i) + 'th'))
 
                 if not(re.match(r"^\w*(\w+[-_])*\w+$", colname)):
-                    warning("Please do not use characters for column names other than "
+                    self._Message__warning("Please do not use characters for column names other than "
                             "A-Za-z0-9_-")
                     continue
 
                 if colname in self.columns:
-                    warning('The entered column name {} has been already choosen '
+                    self._Message__warning('The entered column name {} has been already choosen '
                            '(please enter another name)'.format(colname))
                     continue
 
@@ -224,7 +273,7 @@ class KaggleDataSetCreator(object):
             self.__states["set_column_names"] = True
             return True # Success
         else:
-            warning("You are directly trying to invoke, set_column_names() method"
+            self._Message__warning("You are directly trying to invoke, set_column_names() method"
                     ", please call start() method first")
             return False # Failure
 
@@ -250,12 +299,12 @@ class KaggleDataSetCreator(object):
                 cols = int(cols)
 
                 if cols == 0:
-                    warning("You are looking for 0 column names, please enter >= 1")
+                    self._Message__warning("You are looking for 0 column names, please enter >= 1")
                     continue
 
                 everything_is_ok = True
             else:
-                warning("The entered value doesn't look like a +ve integer "
+                self._Message__warning("The entered value doesn't look like a +ve integer "
                     "please enter a valid integer number")
 
         self.total_columns = cols
@@ -263,40 +312,46 @@ class KaggleDataSetCreator(object):
 
         # Do not need to add \n either at beginning or end while calling messages
         # function like success() / warning() / error() etc.
-        success("You are successfully done with no. of columns") 
+        self._Message__success("You are successfully done with no. of columns") 
 
         ret = self.set_column_names()
         if ret:
-            success("You are successfully done with the column names")
+            self._Message__success("You are successfully done with the column names")
         else:
-            error("Something unexpected happened")
+            self._Message__error("Something unexpected happened")
 
         ret = self.set_container()
         if ret:
-            success("You are successfully done with entering data for your dataset")
+            self._Message__success("You are successfully done with entering data for your dataset")
         else:
-            error("Something unexpected happened")
+            self._Message__error("Something unexpected happened")
+
 
     def status_is_ok(self):
         states = self.__states
 
-        if states["start"]:
-            if states["set_column_names"]:
-                if states["set_container"]:
+        if states.get("start", None):
+            if states.get("set_column_names", None):
+                if states.get("set_container", None):
                     return True
                 else:
-                    warning("You are directly trying to invoke, view() method"
+                    self._Message__warning("You are directly trying to invoke, view() method"
                         ", please call start() => set_column_names() => set_container() methods first")
             else:
-                warning("You are directly trying to invoke, view() method"
+                self._Message__warning("You are directly trying to invoke, view() method"
                     ", please call start() => set_column_names() methods first")
         else:
-            warning("You are directly trying to invoke, view() method"
+            self._Message__warning("You are directly trying to invoke, view() method"
                 ", please call start() method first")
 
         return False # Failure
 
-    def view(self):
+
+    def __create(self, **kwargs):
+        self.df = pd.DataFrame(self.container)
+        self.df_set = True
+
+    def view(self, add_dashes = True):
         """
         Description
         ===========
@@ -306,20 +361,22 @@ class KaggleDataSetCreator(object):
             - The 'container' which is a dictionary can be directly accessed via the class
               instance as below:
               
-            >>> kd = KaggleDataSetCreator()
+            >>> kd = KaggleDataSet()
             >>> kd.start() 
             >>> kd.container
         """
 
         if self.status_is_ok():
-            self.df = pd.DataFrame(self.container)
-            data(self.df) # Success, printing data on Terminal
+            if not self.df_set:
+                self.__create()
+
+            self._Message__data(self.df, add_dashes) # Success, printing data on Terminal
             return True
 
         return False
 
     @property
-    def data(self):
+    def dataset(self):
         """
         Description
         ===========
@@ -334,7 +391,7 @@ class KaggleDataSetCreator(object):
         if self.status_is_ok():
             return self.df 
         else:
-            return False
+            return None
 
 
     def to_csv(self, index=True):
