@@ -101,7 +101,7 @@ class KaggleDataSetCreator(object):
         # and choose another file name by appending numbers like 1, 2, 3 and so...on
         i = 1
         while os.path.exists(os.path.join(filedir, filename + '.' + extension)):
-            filename = filename + "-" + str(i) + '.' + extension;
+            filename = filename + "-" + str(i);
             i = i + 1;
 
         return filedir, filename, extension
@@ -313,7 +313,7 @@ class KaggleDataSetCreator(object):
 
         if self.status_is_ok():
             self.df = pd.DataFrame(self.container)
-            data(self.df) # Success
+            data(self.df) # Success, printing data on Terminal
             return True
 
         return False
@@ -337,7 +337,7 @@ class KaggleDataSetCreator(object):
             return False
 
 
-    def create_csv(self):
+    def to_csv(self, index=True):
         """
         Description
         ===========
@@ -345,5 +345,5 @@ class KaggleDataSetCreator(object):
             - Uses the value of attribute named 'container' for creating DataFrame
         """
 
-        csv_path = os.path.join(self.filedir, self.filename, self.extension)
-        self.df.to_csv(csv_path)
+        csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
+        self.df.to_csv(csv_path, index=index)
