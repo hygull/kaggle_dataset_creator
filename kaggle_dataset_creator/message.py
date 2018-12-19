@@ -28,7 +28,7 @@ class Message(object):
 
 	def __data(self, df, add_slashes = True, slash_count = 50, **kwargs):
 		if add_slashes:
-			print('-' * slash_count);
+			print('\n' + '-' * slash_count);
 
 		print(df)
 

@@ -182,8 +182,8 @@ class KaggleDataSet(Message):
         if done:
             satisfied = False
             rowno = 1
-            hashes =  "======================================="
-            msg = "\n" + hashes + "\nDo you want to add 1 more row / view data (y/n/v): "
+            equals =  "=" * 50
+            msg = "\n" + equals + "\nDo you want to add 1 more row / view data (y/n/v): "
             max_col_len =  max(self.collens)
 
             while not satisfied:
@@ -200,7 +200,7 @@ class KaggleDataSet(Message):
 
                 if inp == 'y' or inp == 'yes':
                     rowno += 1
-                    print(hashes)
+                    print(equals)
                     ask_for_data_entry = True
                     continue # To continue with entering data for next row
                 elif inp.lower() == 'v' or inp.lower() == 'view':
@@ -220,7 +220,7 @@ class KaggleDataSet(Message):
                     else:
                         rowno += 1
 
-                    print(hashes) 
+                    print(equals) 
                     ask_for_data_entry = True
 
             self.__states["set_container"] = True
@@ -350,6 +350,7 @@ class KaggleDataSet(Message):
     def __create(self, **kwargs):
         self.df = pd.DataFrame(self.container)
         self.df_set = True
+
 
     def view(self, add_dashes = True):
         """

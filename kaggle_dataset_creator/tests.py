@@ -76,7 +76,6 @@ def test_column_names():
     print(kd6.columns)
     print(kd6.container)
     kd6.view()
-    print("Saving data to file (default file name will be taken if you missed that)") # It should be here, just for a message
     kd6.to_csv();
 
     # @property 
