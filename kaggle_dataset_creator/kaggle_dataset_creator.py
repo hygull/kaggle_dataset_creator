@@ -75,7 +75,7 @@ class KaggleDataSet(Message):
         self.message = Message()
 
         # Used to store the type of data types of all columns
-        self.data_types = []
+        self.data_types = {}
 
         # Used to store number of enetered rows 
         self.rows = 0
@@ -151,6 +151,7 @@ class KaggleDataSet(Message):
 
         return filedir, filename, extension
 
+
     def get_data_type(self, value):
         """
         Description
@@ -219,6 +220,24 @@ class KaggleDataSet(Message):
         l = len(s) + max_col_len + 4
         f = ("%-" + str(l) + "s : ") % (s + " " + colname)
         value = input(f).strip()
+
+        _type = self.get_data_type(value)
+        if colname in self.data_types:
+            """
+                {
+                    'fullname': 'string',
+                    'age': 'numeric'
+                }
+            """
+
+            current_type = self.data_types[colname]
+
+            if _type != current_type:
+                if self.data_types[colname] == "numeric":
+                    self._Message__warning('Previously this column was numeric, now it is of type string')
+                    self.data_types[colname] = _type # Set to string
+        else:
+            self.data_types[colname] = _type
 
         return value
 

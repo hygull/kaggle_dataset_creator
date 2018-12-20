@@ -82,6 +82,7 @@ def test_column_names():
     print("DATA:- ")
     print(kd6.dataset) # worked
     print('Total rows: ', kd6.rows)
+    print('Types', kd6.data_types)
 
 
 if __name__ == "__main__":
