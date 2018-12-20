@@ -1,4 +1,4 @@
-# kaggle_dataset_creator - A library for generating csv/json files 
+# kaggle_dataset_creator - A  Python package to generate csv/json
 
 A Python package that allows you to create CSV/JSON files by manually entering each
 of the entries of cells row by row in Terminal (Windows CMD / Bash).

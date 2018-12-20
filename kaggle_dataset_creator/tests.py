@@ -81,6 +81,7 @@ def test_column_names():
     # @property 
     print("DATA:- ")
     print(kd6.dataset) # worked
+    print('Total rows: ', kd6.rows)
 
 
 if __name__ == "__main__":

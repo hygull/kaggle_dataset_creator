@@ -74,6 +74,13 @@ class KaggleDataSet(Message):
         # For implementing the feature of printing relevant messages to the console
         self.message = Message()
 
+        # Used to store the type of data types of all columns
+        self.data_types = []
+
+        # Used to store number of enetered rows 
+        self.rows = 0
+
+
     def __validate_and_get(self, path, extension):
         """
         Description
@@ -144,6 +151,63 @@ class KaggleDataSet(Message):
 
         return filedir, filename, extension
 
+    def get_data_type(self, value):
+        """
+        Description
+        ===========
+            - It returns the type of data basically the result would be either 'numeric' or 'string'
+            - If the passed data is int/float or if contains a sequence of numbers including . (dot)
+              the returned value will always be 'numeric' otherwise 'string'.
+
+        Code
+        ====
+            + Below is the logic of getting the type of data
+
+            >>> import re
+            >>>
+            >>> re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12")
+            <_sre.SRE_Match object; span=(0, 2), match='12'>
+            >>>
+            >>> re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12s")
+            >>>
+            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12s")
+            >>> a
+            >>> print(a)
+            None
+            >>>
+            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12")
+            >>> a
+            <_sre.SRE_Match object; span=(0, 2), match='12'>
+            >>>
+            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12.123")
+            >>> a
+            <_sre.SRE_Match object; span=(0, 6), match='12.123'>
+            >>>
+            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12.")
+            >>> a
+            <_sre.SRE_Match object; span=(0, 3), match='12.'>
+            >>>
+            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", ".67")
+            >>> a
+            <_sre.SRE_Match object; span=(0, 3), match='.67'>
+            >>>
+            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "ABC")
+            >>> a
+            >>> print(a)
+            None
+            >>>
+        """
+
+        numeric_regex = r"^(\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*)$"
+        
+        if re.match(numeric_regex, str(value)):
+            _type = 'numeric';
+        else:
+            _type = 'string';
+
+        return _type;
+
+
     def get_value_for(self, rowno, colname, max_col_len):
         """ 
         Description
@@ -151,7 +215,7 @@ class KaggleDataSet(Message):
             - Returns the value entered on console
         """
 
-        s = "[DATA ENTRY] <row " + str(rowno) + "> "
+        s = "[DATA ENTRY] <row: " + str(rowno) + "> "
         l = len(s) + max_col_len + 4
         f = ("%-" + str(l) + "s : ") % (s + " " + colname)
         value = input(f).strip()
@@ -197,6 +261,7 @@ class KaggleDataSet(Message):
                         else:
                             self.container[colname] = [value]
 
+
                 inp = (input(msg).strip()).lower()
 
                 if inp == 'y' or inp == 'yes':
@@ -215,6 +280,7 @@ class KaggleDataSet(Message):
                     nmtc = no_or_mistakenly_typed_confirmation = input("Is this mistakenly typed (y/n): ").strip()
 
                     if(nmtc.lower() == "n" or nmtc.lower() == "no"):
+                        self.rows = rowno
                         satisfied = True
                     elif not(nmtc.lower() == 'y' or nmtc.lower() == 'yes'):
                         self._Message__warning("This is for your help, just type proper value to exit/continue")
@@ -377,6 +443,7 @@ class KaggleDataSet(Message):
 
         return False
 
+
     @property
     def dataset(self):
         """
@@ -399,7 +466,7 @@ class KaggleDataSet(Message):
             return None
 
 
-    def to_csv(self, index=True):
+    def to_csv(self, index=False):
         """
         Description
         ===========
