@@ -74,7 +74,6 @@ class KaggleDataSet(Message):
         # For implementing the feature of printing relevant messages to the console
         self.message = Message()
 
-
     def __validate_and_get(self, path, extension):
         """
         Description
@@ -159,6 +158,7 @@ class KaggleDataSet(Message):
 
         return value
 
+
     def set_container(self):
         """
         Description
@@ -166,6 +166,7 @@ class KaggleDataSet(Message):
             - Asks user to enter data for each rows, column by column 
             - Finally sets the container attribute of the class
         """
+
         ask_for_data_entry = True
         done = False
 
@@ -391,6 +392,9 @@ class KaggleDataSet(Message):
 
         if self.status_is_ok():
             return self.df 
+        elif self.df_set:
+            self.__create()
+            return self.df
         else:
             return None
 
