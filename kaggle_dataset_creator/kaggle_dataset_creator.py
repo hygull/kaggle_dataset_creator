@@ -454,8 +454,8 @@ class KaggleDataSet(Message):
         """
 
         if self.status_is_ok():
-            if not self.df_set:
-                self.__create()
+            # if not self.df_set:
+            self.__create()
 
             self._Message__data(self.df, add_dashes) # Success, printing data on Terminal
             return True
@@ -492,6 +492,10 @@ class KaggleDataSet(Message):
             - Creates csv/json file containing the entered data from Terminal
             - Uses the value of attribute named 'container' for creating DataFrame
         """
+        i = 1
+        while os.path.exists(os.path.join(self.filedir, self.filename + '.' + self.extension)):
+            i = i + 1;
+            self.filename = self.filename + "-" + str(i);
 
         csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
         self.df.to_csv(csv_path, index=index)
