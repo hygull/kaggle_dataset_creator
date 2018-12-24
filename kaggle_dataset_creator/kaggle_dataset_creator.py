@@ -489,6 +489,16 @@ class KaggleDataSet(Message):
             - Creates csv/json file containing the entered data from Terminal
             - Uses the value of attribute named 'container' for creating DataFrame
         """
+        # i = 1
+        # while not os.path.exists(os.path.join(self.filedir, self.filename + '.' + self.extension)):
+        #     if re.match(r'^KaggleDataSet-\d+\.(csv|json)$', self.filename + '.' + self.extension):
+        #         self.filename = 'KaggleDataSet' + "-" + str(i) 
+
+        #     i = i + 1;
+        #     print("saved")
+
+        # csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
+        # self.df.to_csv(csv_path, index=index)
         i = 1
         while os.path.exists(os.path.join(self.filedir, self.filename + '.' + self.extension)):
             i = i + 1;

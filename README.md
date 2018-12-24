@@ -8,7 +8,7 @@ of the entries of cells row by row in Terminal (Windows CMD / Bash).
 
 Open terminal and enter the below command (Python 3).
 
-`pip install kaggle_dataset_creator`
+> pip install kaggle_dataset_creator
 
 ## Features
 
@@ -37,14 +37,14 @@ print("DATA:- ")
 print(kd.dataset) # Accessing dataset attribute to get the final DataFrame
 
 print('Total rows: ', kd.rows)
-print('Types', kd.data_types)
+print('Types: ', kd.data_types)
 ```
 
 If you want to try above in the terminal, try as below after installation.
 
 > In next version, it will be released with more features. Here our intension is to get the final CSV/JSON.
 
-```python
+```bash
 >>> from kaggle_dataset_creator import KaggleDataSet
 >>>
 >>> kd = KaggleDataSet()
