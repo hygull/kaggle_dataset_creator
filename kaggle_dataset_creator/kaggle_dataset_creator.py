@@ -476,9 +476,7 @@ class KaggleDataSet(Message):
               for more details)
         """
 
-        if self.status_is_ok():
-            return self.df 
-        elif self.df_set:
+        if self.status_is_ok() or self.df_set:
             self.__create()
             return self.df
         else:
