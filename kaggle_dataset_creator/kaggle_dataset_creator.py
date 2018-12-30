@@ -22,7 +22,7 @@ class KaggleDataSet(Message):
     """
 
     def __init__(self, 
-                  path = "KaggleDataSet",
+                  path = "KaggleDataSet-1",
                   extension = 'csv'
                 ):
 
@@ -132,9 +132,9 @@ class KaggleDataSet(Message):
 
             if not re.match(r"^\w+(\w+[-_])*\w+$", filename):
                 self._Message__warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc.')
-                filename = "KaggleDataSet"
+                filename = "KaggleDataSet-1"
         else:
-            filename = 'KaggleDataSet'
+            filename = 'KaggleDataSet-1'
             filedir = "."
 
             if not extension in ["json", 'csv']:
@@ -501,8 +501,27 @@ class KaggleDataSet(Message):
         # self.df.to_csv(csv_path, index=index)
         i = 1
         while os.path.exists(os.path.join(self.filedir, self.filename + '.' + self.extension)):
-            i = i + 1;
-            self.filename = self.filename + "-" + str(i);
+            # >>> re.match(r'\w+-\d+', "KaggleDataSet-55")
+            # <_sre.SRE_Match object; span=(0, 16), match='KaggleDataSet-55'>
+            # >>>
+            # >>> re.match(r'\w+-\d+', "KaggleDataSet55")
+            # >>>
+            # >>> re.match(r'\w+-\d+', "Abc-67")
+            # <_sre.SRE_Match object; span=(0, 6), match='Abc-67'>
+            # >>>
+
+            if re.match(r'\w+-\d+', self.filename):
+                base, num = self.filename.split('-');
+                base = str(int(num) + 1)
+                self.filename = base + num
+            else:
+                if "-" in self.filename:
+                    count = self.filename.count('-')
+                    if count > 1:
+                        self.filename = self.filename.replace('-', '_', count - 1)
+                else:
+                    self.filename = self.filename + "-" + str(i);
+                    i += 1
 
         csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
         self.df.to_csv(csv_path, index=index)
