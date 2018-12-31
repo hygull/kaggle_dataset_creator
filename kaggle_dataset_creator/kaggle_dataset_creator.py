@@ -38,19 +38,7 @@ class KaggleDataSet(Message):
             - extension: Extension to use for the output file (default: csv)
         """
 
-        filedir, filename, extension = self.__validate_and_get(path, extension)
-
-        # Used to store the relative/absolute path of the destination directory
-        # This value will be used while creating the JSON/CSV file 
-        # If you do not provide file path while instantiation then the current 
-        # directory (.) will be used
-        self.filedir = filedir
-
-        # Used to store the base name of file (A.py => A)
-        self.filename = filename
-
-        # Used to store the extension of the file
-        self.extension = extension
+        self.__validate_and_set(path, extension)
 
         # Conatiner of enetered data (an input to pandas.DataFrame)
         self.container = {} 
@@ -80,7 +68,7 @@ class KaggleDataSet(Message):
         self.rows = 0
 
 
-    def __validate_and_get(self, path, extension):
+    def __validate_and_set(self, path, extension):
         """
         Description
         ===========
@@ -131,24 +119,31 @@ class KaggleDataSet(Message):
                 filedir = "."
 
             if not re.match(r"^\w+(\w+[-_])*\w+$", filename):
-                self._Message__warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc.')
-                filename = "KaggleDataSet-1"
+                self._Message__warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc.');
+                filename = "KaggleDataSet-1";
         else:
-            filename = 'KaggleDataSet-1'
-            filedir = "."
+            filename = 'KaggleDataSet-1';
+            filedir = ".";
 
             if not extension in ["json", 'csv']:
-                extension = 'csv'
+                extension = 'csv';
+
+        # Used to store the relative/absolute path of the destination directory
+        # This value will be used while creating the JSON/CSV file 
+        # If you do not provide file path while instantiation then the current 
+        # directory (.) will be used
+        self.filedir = filedir
+
+        # Used to store the base name of file (A.py => A)
+        self.filename = filename
+
+        # Used to store the extension of the file
+        self.extension = extension
 
         # Repeatedly check for an existence of specified filename, 
         # if it already exists (do not override)
         # and choose another file name by appending numbers like 1, 2, 3 and so...on
-        i = 1
-        while os.path.exists(os.path.join(filedir, filename + '.' + extension)):
-            filename = filename + "-" + str(i);
-            i = i + 1;
-
-        return filedir, filename, extension
+        self.__set_names()
 
 
     def get_data_type(self, value):
@@ -481,25 +476,7 @@ class KaggleDataSet(Message):
         else:
             return None
 
-
-    def to_csv(self, index=False):
-        """
-        Description
-        ===========
-            - Creates csv/json file containing the entered data from Terminal
-            - Uses the value of attribute named 'container' for creating DataFrame
-        """
-        # i = 1
-        # while not os.path.exists(os.path.join(self.filedir, self.filename + '.' + self.extension)):
-        #     if re.match(r'^KaggleDataSet-\d+\.(csv|json)$', self.filename + '.' + self.extension):
-        #         self.filename = 'KaggleDataSet' + "-" + str(i) 
-
-        #     i = i + 1;
-        #     print("saved")
-
-        # csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
-        # self.df.to_csv(csv_path, index=index)
-        i = 1
+    def __set_names(self):
         while os.path.exists(os.path.join(self.filedir, self.filename + '.' + self.extension)):
             # >>> re.match(r'\w+-\d+', "KaggleDataSet-55")
             # <_sre.SRE_Match object; span=(0, 16), match='KaggleDataSet-55'>
@@ -509,19 +486,38 @@ class KaggleDataSet(Message):
             # >>> re.match(r'\w+-\d+', "Abc-67")
             # <_sre.SRE_Match object; span=(0, 6), match='Abc-67'>
             # >>>
+            print('[[[]]]', self.filename)
 
             if re.match(r'\w+-\d+', self.filename):
                 base, num = self.filename.split('-');
-                base = str(int(num) + 1)
-                self.filename = base + num
+                num = str(int(num) + 1)
+                self.filename = base + '-' + num
+                print('Used')
             else:
                 if "-" in self.filename:
                     count = self.filename.count('-')
                     if count > 1:
-                        self.filename = self.filename.replace('-', '_', count - 1)
+                        self.filename = self.filename.replace('-', '_') + '-' + str(i)
+                        i += 1
+                        print('Fine')
+
+                    # print('Get it done')
                 else:
                     self.filename = self.filename + "-" + str(i);
                     i += 1
+                    print('Giraffe')
+
+
+    def to_csv(self, index=False):
+        """
+        Description
+        ===========
+            - Creates csv/json file containing the entered data from Terminal
+            - Uses the value of attribute named 'container' for creating DataFrame
+        """
+
+        self.__set_names()
+        print('>>>', self.filename)
 
         csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
         self.df.to_csv(csv_path, index=index)
