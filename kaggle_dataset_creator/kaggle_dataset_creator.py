@@ -486,38 +486,45 @@ class KaggleDataSet(Message):
             # >>> re.match(r'\w+-\d+', "Abc-67")
             # <_sre.SRE_Match object; span=(0, 6), match='Abc-67'>
             # >>>
-            print('[[[]]]', self.filename)
 
             if re.match(r'\w+-\d+', self.filename):
                 base, num = self.filename.split('-');
                 num = str(int(num) + 1)
                 self.filename = base + '-' + num
-                print('Used')
             else:
                 if "-" in self.filename:
                     count = self.filename.count('-')
-                    if count > 1:
-                        self.filename = self.filename.replace('-', '_') + '-' + str(i)
-                        i += 1
-                        print('Fine')
 
-                    # print('Get it done')
-                else:
-                    self.filename = self.filename + "-" + str(i);
-                    i += 1
-                    print('Giraffe')
+                    if count > 1:
+                        self.filename = self.filename.replace('-', '_') + '-1'
+
+
+    def __get_path(self):
+        self.__set_names()
+        path = os.path.join(self.filedir, self.filename + '.' + self.extension)
+        return path
 
 
     def to_csv(self, index=False):
         """
         Description
         ===========
-            - Creates csv/json file containing the entered data from Terminal
+            - Creates CSV file containing the entered data from Terminal
             - Uses the value of attribute named 'container' for creating DataFrame
         """
 
-        self.__set_names()
-        print('>>>', self.filename)
-
-        csv_path = os.path.join(self.filedir, self.filename + '.' + self.extension)
+        csv_path = self.__get_path()
         self.df.to_csv(csv_path, index=index)
+
+
+    def to_json(self, index=False):
+        """
+        Description
+        ===========
+            - Creates JSON file containing the enetered data from Terminal
+            - Uses the value of attribute named 'container' for creating DataFrame
+        """
+        json_path = self.__get_path()
+        self.df.to_json(json_path, index=index)
+
+

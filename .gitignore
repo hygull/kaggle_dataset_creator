@@ -106,3 +106,4 @@ venv
 venv/*
 KaggleDataSet.*
 KaggleDataSet*
+*.csv
