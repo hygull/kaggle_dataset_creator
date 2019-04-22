@@ -160,40 +160,26 @@ class KaggleDataSet(Message):
 
             >>> import re
             >>>
-            >>> re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12")
-            <_sre.SRE_Match object; span=(0, 2), match='12'>
-            >>>
-            >>> re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12s")
-            >>>
-            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12s")
-            >>> a
-            >>> print(a)
-            None
-            >>>
-            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12")
-            >>> a
-            <_sre.SRE_Match object; span=(0, 2), match='12'>
-            >>>
-            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12.123")
-            >>> a
-            <_sre.SRE_Match object; span=(0, 6), match='12.123'>
-            >>>
-            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "12.")
-            >>> a
-            <_sre.SRE_Match object; span=(0, 3), match='12.'>
-            >>>
-            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", ".67")
-            >>> a
-            <_sre.SRE_Match object; span=(0, 3), match='.67'>
-            >>>
-            >>> a = re.match(r"^((\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*))$", "ABC")
-            >>> a
-            >>> print(a)
-            None
-            >>>
+            >>> numeric_regex = r"^(\d+)$|^(\d+\.\d+)$|^(\d*\.\d+)$|^(\d+\.\d*)$"
+            >>> re.match(numeric_regex, "14-08-1992")
+            >>> re.match(numeric_regex, "14081992")
+            <_sre.SRE_Match object; span=(0, 8), match='14081992'>
+            >>> 
+            >>> re.match(numeric_regex, "140819.92")
+            <_sre.SRE_Match object; span=(0, 9), match='140819.92'>
+            >>> re.match(numeric_regex, "140819.")
+            <_sre.SRE_Match object; span=(0, 7), match='140819.'>
+            >>> re.match(numeric_regex, ".8855")
+            <_sre.SRE_Match object; span=(0, 5), match='.8855'>
+            >>> re.match(numeric_regex, ".")
+            >>> re.match(numeric_regex, ".2")
+            <_sre.SRE_Match object; span=(0, 2), match='.2'>
+            >>> re.match(numeric_regex, "4")
+            <_sre.SRE_Match object; span=(0, 1), match='4'>
+            >>> 
         """
 
-        numeric_regex = r"^(\d+)|(\d+\.\d+)|(\d*\.\d+)|(\d+\.\d*)$"
+        numeric_regex = r"^(\d+)$|^(\d+\.\d+)$|^(\d*\.\d+)$|^(\d+\.\d*)$"
         
         if re.match(numeric_regex, str(value)):
             _type = 'numeric';
