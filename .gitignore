@@ -106,4 +106,6 @@ venv
 venv/*
 KaggleDataSet.*
 KaggleDataSet*
-*.csv
+i*.csv
+venv3.6/
+venv2.7/
