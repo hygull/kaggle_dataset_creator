@@ -1,4 +1,5 @@
 from kaggle_dataset_creator import KaggleDataSet
+from kaggle_dataset_creator.random_string import random_string
 
 def test_filename_extension_filedir():
 	# TEST CASE 1
@@ -88,7 +89,8 @@ def test_column_names():
 
 if __name__ == "__main__":
     # 1st
-    test_filename_extension_filedir()
+    # test_filename_extension_filedir()
 
-    # 2nd
-    test_column_names()
+    # # 2nd
+    # test_column_names()
+    print(random_string())

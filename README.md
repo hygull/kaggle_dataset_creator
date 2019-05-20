@@ -178,3 +178,47 @@ True
 >>>
 ```
 
+
+## Generating random strings
+
+```bash
+Python 3.6.7 (v3.6.7:6ec5cf24b7, Oct 20 2018, 03:02:14) 
+[GCC 4.2.1 Compatible Apple LLVM 6.0 (clang-600.0.57)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+>>> from kaggle_dataset_creator.random_string import random_string
+>>> 
+>>> random_string()
+'VFdwQmVFOV'
+>>> 
+>>> random_string()
+'TWpBeE9TMH'
+>>> 
+>>> random_string()
+'=UDN0gDN54'
+>>> 
+>>> random_string()
+'TWpBeE9TMH'
+>>> 
+>>> random_string()
+'=ATM1UDMz4'
+>>> 
+>>> random_string(11)
+'VFdwQmVFOVR'
+>>> 
+>>> random_string(15)
+'5M2RW5kTUVVRxAT'
+>>> 
+>>> random_string(15)
+'VFdwQmVFOVRNSGR'
+>>> 
+>>> random_string(15)
+'5M2RS9kQUFVR5sW'
+>>> 
+>>> random_string(15)
+'=AzN2MDMy4iNzoz'
+>>> 
+>>> random_string(15)
+'MjAxOS0wNS0yMSA'
+>>> 
+```
