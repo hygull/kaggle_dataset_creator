@@ -1,7 +1,7 @@
 import os
 import re
 import pandas as pd
-from message import Message
+from .message import Message
 
 
 class KaggleDataSet(Message):
@@ -66,7 +66,6 @@ class KaggleDataSet(Message):
 
         # Used to store number of enetered rows 
         self.rows = 0
-
 
     def __validate_and_set(self, path, extension):
         """
