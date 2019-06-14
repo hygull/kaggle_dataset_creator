@@ -92,5 +92,5 @@ if __name__ == "__main__":
     # test_filename_extension_filedir()
 
     # # 2nd
-    # test_column_names()
+    test_column_names()
     print(random_string())

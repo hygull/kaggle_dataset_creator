@@ -22,7 +22,7 @@ class KaggleDataSet(Message):
     """
 
     def __init__(self, 
-                  path = "KaggleDataSet-1",
+                  path = "",
                   extension = 'csv'
                 ):
 
