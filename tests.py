@@ -73,7 +73,7 @@ def test_filename_extension_filedir():
 
 def test_column_names():
     # kd6 = KaggleDataSet('MyDataSet-1') 
-    kd6 = KaggleDataSet('My-Data-Set-1')
+    kd6 = KaggleDataSet()
     kd6.start()
     print(kd6.columns)
     print(kd6.container)
@@ -93,4 +93,11 @@ if __name__ == "__main__":
 
     # # 2nd
     test_column_names()
-    print(random_string())
+    # print(random_string())
+
+    import os
+    print(__file__)
+    print(os.path.abspath(__file__))
+
+    print(os.path.dirname(os.path.abspath(__file__)))
+

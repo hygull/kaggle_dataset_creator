@@ -2,7 +2,7 @@ import os
 import re
 import pandas as pd
 from .message import Message
-
+from datetime import datetime
 
 class KaggleDataSet(Message):
     """
@@ -22,7 +22,7 @@ class KaggleDataSet(Message):
     """
 
     def __init__(self, 
-                  path = "KaggleDataSet-1",
+                  path='.',
                   extension = 'csv'
                 ):
 
@@ -97,6 +97,9 @@ class KaggleDataSet(Message):
             >>>
         """
 
+        this_filename = datetime.now().strftime("DataSet-%d-%m-%Y-%H%M%S")
+        this_dir = '.' # os.path.dirname(os.path.abspath(__file__))
+
         if path and type(path) is str:
             filedir, file_w_ext = os.path.split(path)
             filename, ext = os.path.splitext(file_w_ext)
@@ -108,21 +111,21 @@ class KaggleDataSet(Message):
                     extension = ext
                 else:
                     extension = 'csv'
-            elif not extension in ['json', 'csv'] :
+            else:
                 extension = "csv"
 
             if not filedir:
-                filedir = "."
+                filedir = this_dir
 
             if not os.path.exists(filedir):
-                filedir = "."
+                filedir = this_dir
 
             if not re.match(r"^\w+(\w+[-_])*\w+$", filename):
-                self._Message__warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc.');
-                filename = "KaggleDataSet-1";
+                filename = this_filename
+                self._Message__warning(f'Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc, so taking {filename}.{extension}');
         else:
-            filename = 'KaggleDataSet-1';
-            filedir = ".";
+            filename = this_filename;
+            filedir = this_dir
 
             if not extension in ["json", 'csv']:
                 extension = 'csv';
@@ -500,6 +503,7 @@ class KaggleDataSet(Message):
 
         csv_path = self.__get_path()
         self.df.to_csv(csv_path, index=index)
+        self._Message__success(f'CSV file successfully saved as {csv_path}')
 
 
     def to_json(self, index=False):
@@ -511,5 +515,7 @@ class KaggleDataSet(Message):
         """
         json_path = self.__get_path()
         self.df.to_json(json_path, index=index)
+        self._Message__success(f'JSON file successfully saved  {csv_path}')
+
 
 
