@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 for package in ['pandas==0.23.4', 'colorama==0.4.1', 'numpy==1.15.4']:
-    os.system('pip install %s' % (package))
+    os.system('pip3 install %s' % (package))
 
 setuptools.setup(
     name="kaggle_dataset_creator",
