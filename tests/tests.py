@@ -1,5 +1,10 @@
-from kaggle_dataset_creator import KaggleDataSet
+import sys
+sys.path.append('..')
 
+from kaggle_dataset_creator import KaggleDataSet
+# from kaggle_dataset_creator import random_string
+
+print(KaggleDataSet)
 def test_filename_extension_filedir():
 	# TEST CASE 1
 	kaggle_dataset = kd = KaggleDataSet()
@@ -72,23 +77,32 @@ def test_filename_extension_filedir():
 
 def test_column_names():
     # kd6 = KaggleDataSet('MyDataSet-1') 
-    kd6 = KaggleDataSet('My-Data-Set-1')
+    kd6 = KaggleDataSet()
     kd6.start()
-    print(kd6.columns)
-    print(kd6.container)
+    # print(kd6.columns)
+    # print(kd6.container)
     kd6.view()
-    kd6.to_csv();
+    kd6.to_csv()
+    kd6.to_json()
 
-    # @property 
-    print("DATA:- ")
-    print(kd6.dataset) # worked
-    print('Total rows: ', kd6.rows)
-    print('Types', kd6.data_types)
+    # # @property 
+    # print("DATA:- ")
+    # print(kd6.dataset) # worked
+    # print('Total rows: ', kd6.rows)
+    # print('Types', kd6.data_types)
 
 
 if __name__ == "__main__":
     # 1st
-    test_filename_extension_filedir()
+    # test_filename_extension_filedir()
 
-    # 2nd
+    # # 2nd
     test_column_names()
+    # print(random_string())
+
+    import os
+    print(__file__)
+    print(os.path.abspath(__file__))
+
+    print(os.path.dirname(os.path.abspath(__file__)))
+

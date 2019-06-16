@@ -37,7 +37,6 @@ class KaggleDataSet(Message):
             - path: Absolute/relative path of the output file (csv, json)
             - extension: Extension to use for the output file (default: csv)
         """
-
         self.__validate_and_set(path, extension)
 
         # Conatiner of enetered data (an input to pandas.DataFrame)
@@ -122,7 +121,7 @@ class KaggleDataSet(Message):
 
             if not re.match(r"^\w+(\w+[-_])*\w+$", filename):
                 filename = this_filename
-                self._Message__warning(f'Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc, so taking {filename}.{extension}');
+                self._Message__warning('Valid file names are: my-data-set, mydataset, my-data_set, mydataset.csv etc, so taking %s.%s' % (filename, extension));
         else:
             filename = this_filename;
             filedir = this_dir
@@ -487,13 +486,16 @@ class KaggleDataSet(Message):
                         self.filename = self.filename.replace('-', '_') + '-1'
 
 
-    def __get_path(self):
-        self.__set_names()
+    def __get_path(self, extension_type):
+        # self.__set_names()
+        if self.extension == 'csv' and extension_type == 'json':
+            self.extension = extension_type
+
         path = os.path.join(self.filedir, self.filename + '.' + self.extension)
         return path
 
 
-    def to_csv(self, index=False):
+    def to_csv(self, index=False, **kwargs):
         """
         Description
         ===========
@@ -501,21 +503,21 @@ class KaggleDataSet(Message):
             - Uses the value of attribute named 'container' for creating DataFrame
         """
 
-        csv_path = self.__get_path()
-        self.df.to_csv(csv_path, index=index)
-        self._Message__success(f'CSV file successfully saved as {csv_path}')
+        csv_path = self.__get_path('csv')
+        self.df.to_csv(csv_path, index=index, **kwargs)
+        self._Message__success('CSV file is successfully saved as %s' % (csv_path))
 
 
-    def to_json(self, index=False):
+    def to_json(self, index=False, **kwargs):
         """
         Description
         ===========
             - Creates JSON file containing the enetered data from Terminal
             - Uses the value of attribute named 'container' for creating DataFrame
         """
-        json_path = self.__get_path()
-        self.df.to_json(json_path, index=index)
-        self._Message__success(f'JSON file successfully saved  {csv_path}')
+        json_path = self.__get_path('json')
+        self.df.to_json(json_path, **kwargs)
+        self._Message__success('JSON file is successfully saved as %s' % (json_path))
 
 
 
