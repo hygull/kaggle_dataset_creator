@@ -1,15 +1,12 @@
 import setuptools
-import os
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-for package in ['pandas==0.23.4', 'colorama==0.4.1', 'numpy==1.15.4']:
-    os.system('pip3 install %s' % (package))
 
 setuptools.setup(
     name="kaggle_dataset_creator",
-    version="1.5",
+    version="1.6",
     author="Rishikesh Agrawani",
     author_email="rishikesh0014051992@gmail.com",
     description="A Python package to generate csv/json from command line. It allows you to create CSV/JSON files by asking you to manually enter data for each cells row by row in Terminal (Windows CMD / Bash).",
@@ -24,5 +21,6 @@ setuptools.setup(
     ],
     keywords=['CSV', 'JSON', 'kaggle', 'dataset', 'Python 3', 'Windows', 'Linux', 'MAC', 'Command line'],
     python_requires='>=3',
-    install_requires=[]
+    install_requires=['pandas >= 0.23.4', 'colorama >= 0.4.1', 'numpy >= 1.15.4'],
+    zip_safe=False
 )
