@@ -20,5 +20,5 @@ setuptools.setup(
     ],
     keywords=['CSV', 'JSON', 'kaggle', 'dataset', 'Python 3', 'Windows', 'Linux', 'MAC', 'Command line'],
     python_requires='>=3',
-    install_requires=['pandas', 'colorama', 'numpy']
+    install_requires=['pandas==0.23.4', 'colorama==0.4.1', 'numpy==1.15.4']
 )
