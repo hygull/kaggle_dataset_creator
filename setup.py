@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="kaggle_dataset_creator",
-    version="1.6",
+    version="0.0.1",
     author="Rishikesh Agrawani",
     author_email="rishikesh0014051992@gmail.com",
     description="A Python package to generate csv/json from command line. It allows you to create CSV/JSON files by asking you to manually enter data for each cells row by row in Terminal (Windows CMD / Bash).",
